@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1085293059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1085293060}
+  m_Layer: 0
+  m_Name: PaintCamHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1085293060
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1085293059}
+  m_LocalRotation: {x: -0.08715578, y: 0, z: 0, w: 0.9961947}
+  m_LocalPosition: {x: 0, y: 5, z: 15.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3897083832116770319}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: -10, y: 0, z: 0}
 --- !u!1 &775562271671435267
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,6 +198,7 @@ GameObject:
   - component: {fileID: 501458969145368206}
   - component: {fileID: 1813692291851543436}
   - component: {fileID: 1810983636215920129}
+  - component: {fileID: 2577266428117121682}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -273,6 +304,22 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &2577266428117121682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2273208963908908539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3d57806501cb584f80174110a6ca9c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  paintST: 0
+  followST: 0
+  player: {fileID: 3730614269195483535}
+  paintHolder: {fileID: 1085293059}
 --- !u!1 &2786403333925061845
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,6 +411,7 @@ Transform:
   m_Children:
   - {fileID: 4075226895540953909}
   - {fileID: 8479214337909226228}
+  - {fileID: 1085293060}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -484,10 +532,10 @@ GameObject:
   - component: {fileID: 7957352093045225807}
   - component: {fileID: 1901312300698551306}
   - component: {fileID: 3642817330476399434}
-  - component: {fileID: 30350068497508621}
+  - component: {fileID: 6762034242865810093}
   m_Layer: 0
   m_Name: Boy
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -520,7 +568,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 22cc01c397c89d24893031a9c1f9f7f5, type: 3}
   m_Controller: {fileID: 9100000, guid: 0f256852aa742a04c853ecae398c0dd2, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 0
   m_UpdateMode: 1
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
@@ -558,7 +606,7 @@ CapsuleCollider:
   m_Height: 2.5
   m_Direction: 1
   m_Center: {x: 0, y: 1.25, z: 0}
---- !u!114 &30350068497508621
+--- !u!114 &6762034242865810093
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -567,13 +615,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3730614269195483535}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44e4d17c48e87e34d8eaa88c05ac9c6d, type: 3}
+  m_Script: {fileID: 11500000, guid: c028e1cc5ba30fb43bbafa05daa74d8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _camera: {fileID: 0}
-  playerSpawn: {fileID: 0}
-  playerMoveSpeed: 5
-  followSpeed: 0
+  spawnPoint: {fileID: 0}
+  moveSpeed: 10
+  _camera: {fileID: 2273208963908908539}
 --- !u!1 &5239230249375534399
 GameObject:
   m_ObjectHideFlags: 0
