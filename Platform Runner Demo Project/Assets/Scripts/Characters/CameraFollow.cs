@@ -25,8 +25,8 @@ public class CameraFollow : MonoBehaviour
 
     void PaintState()
     {
-        gameObject.GetComponent<Camera>().fieldOfView = Mathf.Lerp(90, 60, .001f);
         transform.position = Vector3.Lerp(transform.position, paintHolder.transform.position, Time.deltaTime * 2);
         transform.rotation = paintHolder.transform.rotation;             
+        gameObject.GetComponent<Camera>().fieldOfView = Mathf.Lerp(90, 60, .001f);
     }
 }

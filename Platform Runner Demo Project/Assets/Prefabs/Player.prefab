@@ -213,13 +213,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2273208963908908539}
-  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
+  m_LocalRotation: {x: 0.30070576, y: 0, z: 0, w: 0.953717}
   m_LocalPosition: {x: 0, y: 7, z: -5.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3897083832116770319}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 35, y: 0, z: 0}
 --- !u!20 &501458969145368206
 Camera:
   m_ObjectHideFlags: 0
@@ -532,7 +532,7 @@ GameObject:
   - component: {fileID: 7957352093045225807}
   - component: {fileID: 1901312300698551306}
   - component: {fileID: 3642817330476399434}
-  - component: {fileID: 6762034242865810093}
+  - component: {fileID: 661339150771417827}
   m_Layer: 0
   m_Name: Boy
   m_TagString: Player
@@ -606,7 +606,7 @@ CapsuleCollider:
   m_Height: 2.5
   m_Direction: 1
   m_Center: {x: 0, y: 1.25, z: 0}
---- !u!114 &6762034242865810093
+--- !u!114 &661339150771417827
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -615,10 +615,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3730614269195483535}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c028e1cc5ba30fb43bbafa05daa74d8c, type: 3}
+  m_Script: {fileID: 11500000, guid: 44e4d17c48e87e34d8eaa88c05ac9c6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 0}
+  endPoint: {fileID: 0}
   moveSpeed: 10
   _camera: {fileID: 2273208963908908539}
 --- !u!1 &5239230249375534399

@@ -4,11 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Opponent
   - Obstacles
-  - Donut
   - Ground
   - PaintTrigger
+  - EndPoint
+  - Opponent
+  - Dynamic
   layers:
   - Default
   - TransparentFX
