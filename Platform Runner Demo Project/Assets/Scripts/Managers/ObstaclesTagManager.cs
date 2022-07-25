@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ObstaclesTagManager : MonoBehaviour
@@ -8,8 +7,8 @@ public class ObstaclesTagManager : MonoBehaviour
     protected bool isPush;
     protected bool isHit;
 
-    [SerializeField] protected GameObject _boy;
-    [SerializeField] protected Transform _spawnPoint;
+    [SerializeField] protected GameObject boy;
+    [SerializeField] protected Transform spawnPoint;
     private void OnCollisionEnter(Collision collision)
     {
 
@@ -22,25 +21,25 @@ public class ObstaclesTagManager : MonoBehaviour
         if(isPush)
         {
             if (collision.gameObject.CompareTag("Player"))
-                PushPlayer();
+                Push();
         }
             
         if (isHit)
         {
             if (collision.gameObject.CompareTag("Player"))
-                KillPlayer();
+                Kill();
         }
     }
 
-    public void KillPlayer()
+    public void Kill()
     {
-        _boy.transform.position = _spawnPoint.position;
-        _boy.GetComponent<PlayerScript>().HitObstacles();
+        boy.transform.position = spawnPoint.position;
+        boy.GetComponent<PlayerScript>().HitObstacles();
         // RESPAWND THE PLAYER
     }
-    public void PushPlayer()
+    public void Push()
     {
-        _boy.GetComponent<PlayerScript>();
+        boy.GetComponent<PlayerScript>().PushPlayer();
         // PUSH THE PLAYER
     }
 }

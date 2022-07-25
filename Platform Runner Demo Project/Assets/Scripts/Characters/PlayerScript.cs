@@ -9,20 +9,20 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] float sideSpeed;
     [SerializeField] GameObject _camera;
 
-    Rigidbody rigidBody;
-    CameraFollow camFollow;
-    AnimManager animManager;
+    Rigidbody _rigidBody;
+    CameraFollow _camFollow;
+    AnimManager _animManager;
 
-    bool canRun;
-    bool isInteract;
+    bool _canRun;
+    bool _isInteract;
     int _second;
     float _timer;
     
     private void Awake()
     {
-        rigidBody = GetComponent<Rigidbody>();
-        camFollow = _camera.GetComponent<CameraFollow>();
-        animManager = GetComponent<AnimManager>();
+        _rigidBody = GetComponent<Rigidbody>();
+        _camFollow = _camera.GetComponent<CameraFollow>();
+        _animManager = GetComponent<AnimManager>();
         
     }
     private void Start()
@@ -58,14 +58,14 @@ public class PlayerScript : MonoBehaviour
     }
     void RunPlayer()
     {
-        if (canRun)
+        if (_canRun)
         {
             transform.Translate(Vector3.forward * forwardSpeed * Time.deltaTime);
-            animManager.AnimStates(AnimManager.States.run);
+            _animManager.AnimStates(AnimManager.States.run);
         }   
         else
         {
-            animManager.AnimStates(AnimManager.States.idle);
+            _animManager.AnimStates(AnimManager.States.idle);
         }
     }
 
@@ -73,32 +73,36 @@ public class PlayerScript : MonoBehaviour
     {
         StartCoroutine(RunBoy());
     }
+    public void PushPlayer()
+    {
+
+    }
 
     IEnumerator RunBoy()
     {
-        canRun = false;
-        camFollow.followST = true;
+        _canRun = false;
+        _camFollow.followST = true;
 
         yield return new WaitForSeconds(.5f);
-        canRun = true;
+        _canRun = true;
 
         StopCoroutine(RunBoy());
     }
     IEnumerator PaintBoy()
     {
-        canRun = false;
-        camFollow.followST = false;
+        _canRun = false;
+        _camFollow.followST = false;
 
         yield return new WaitForSeconds(1f);
-        camFollow.paintST = true;
+        _camFollow.paintST = true;
 
         StopCoroutine(PaintBoy());
     }
     IEnumerator VictoryState()
     {
-        canRun = false;
+        _canRun = false;
         yield return new WaitForEndOfFrame();
-        animManager.AnimStates(AnimManager.States.victory);
+        _animManager.AnimStates(AnimManager.States.victory);
 
         StopCoroutine(VictoryState());
     }

@@ -1,26 +1,25 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent),typeof(AnimManager))]
 public class Opponent : MonoBehaviour
 {
-    public Transform _target;
+    public Transform target;
     public Transform spawnPoint;
     public float updateSpeed;
 
     //private Transform target;
     private NavMeshAgent _agent;
-    private AnimManager animManager;
-    private Rigidbody rigidBody;
+    private AnimManager _animManager;
+    private Rigidbody _rigidBody;
 
     //float randomX = Random.Range(-3f,3f);
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
-        animManager = GetComponent<AnimManager>();
-        rigidBody = GetComponent<Rigidbody>();
+        _animManager = GetComponent<AnimManager>();
+        _rigidBody = GetComponent<Rigidbody>();
     }
     private void Start()
     {
@@ -56,18 +55,18 @@ public class Opponent : MonoBehaviour
     private IEnumerator FollowTarget()
     {
         yield return new WaitForSeconds(updateSpeed);
-        _agent.SetDestination(_target.position);
-        animManager.AnimStates(AnimManager.States.run);
+        _agent.SetDestination(target.position);
+        _animManager.AnimStates(AnimManager.States.run);
 
         StopCoroutine(FollowTarget());
     }
     private IEnumerator VictoryState()
     {
         _agent.enabled = false;
-        rigidBody.constraints = RigidbodyConstraints.FreezeRotation;
+        _rigidBody.constraints = RigidbodyConstraints.FreezeRotation;
 
         yield return new WaitForEndOfFrame();
-        animManager.AnimStates(AnimManager.States.victory);
+        _animManager.AnimStates(AnimManager.States.victory);
 
         StopCoroutine(VictoryState());
         StopCoroutine(FollowTarget());
