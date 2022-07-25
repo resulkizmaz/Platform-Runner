@@ -9,7 +9,6 @@ public class ObstaclesTagManager : MonoBehaviour
     protected bool isHit;
 
     [SerializeField] protected GameObject _boy;
-    [SerializeField] protected GameObject _girl;
     [SerializeField] protected Transform _spawnPoint;
     private void OnCollisionEnter(Collision collision)
     {
@@ -24,16 +23,12 @@ public class ObstaclesTagManager : MonoBehaviour
         {
             if (collision.gameObject.CompareTag("Player"))
                 PushPlayer();
-            if (collision.gameObject.CompareTag("Opponent"))
-                PushOpponent();
         }
             
         if (isHit)
         {
             if (collision.gameObject.CompareTag("Player"))
                 KillPlayer();
-            if (collision.gameObject.CompareTag("Opponent"))
-                collision.transform.position = _spawnPoint.position;
         }
     }
 
@@ -45,11 +40,7 @@ public class ObstaclesTagManager : MonoBehaviour
     }
     public void PushPlayer()
     {
-        // PUSH THE PLAYER
-    }
-    
-    public void PushOpponent()
-    {
+        _boy.GetComponent<PlayerScript>();
         // PUSH THE PLAYER
     }
 }
