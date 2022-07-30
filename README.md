@@ -1,3 +1,3 @@
 # Platform-Runner
 
-NavMeshComponents Referance : https://github.com/Unity-Technologies/NavMeshComponents
+Paintable Wall Referance : https://github.com/mixandjam/Splatoon-Ink
