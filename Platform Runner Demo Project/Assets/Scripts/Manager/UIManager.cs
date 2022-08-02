@@ -5,13 +5,13 @@ public class UIManager : MonoBehaviour
 {
     public enum UIState { Gameplay, Win, Lose, Settings, Begin, Pause };
 
-    [Header("Other Reference")]
-    [SerializeField] private MousePainter mousePainter;
-    [Space(10)]
-    public Image paintingBar;
+    //[Header("Other Reference")]
+    //[SerializeField] private MousePainter mousePainter;
+    //[Space(10)]
+    //public Image paintingBar;
+    //public Text paintEnergyText;
     public GameObject sortingPanel;
     public Text sortingText;
-    public Text paintEnergyText;
     [Header("Panels")]
     [SerializeField] private GameObject gameplayPanel;
     [SerializeField] private GameObject winPanel;
@@ -25,14 +25,14 @@ public class UIManager : MonoBehaviour
     {
         _gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
 
-        if (mousePainter != null)
-            paintingBar.fillAmount = mousePainter.PaintEnergy / 100f;
+       // if (mousePainter != null)
+          //  paintingBar.fillAmount = mousePainter.PaintEnergy / 100f;
     }
 
     private void Update()
     {
-        if (mousePainter.IsClick && mousePainter != null) // While we painting the wall the energy decreases. (Visually)
-            paintingBar.fillAmount = _gameManager.paintEnergy / 100f;
+        //if (mousePainter.IsClick && mousePainter != null) // While we painting the wall the energy decreases. (Visually)
+            //paintingBar.fillAmount = _gameManager.paintEnergy / 100f;
     }
 
     public void SetUIPanels(UIState state)

@@ -8,6 +8,7 @@ public class AIController : MonoBehaviour
 
     [SerializeField] private Transform target;
     [SerializeField] private float restartTime = 1f;
+    [SerializeField] private float forcePower;
     [Header("Ground Check")]
     [Range(0.1f, 1f)]
     [SerializeField] private float groundCheckAmount = 0.5f;
@@ -92,7 +93,7 @@ public class AIController : MonoBehaviour
         _gameManager.isDestination = false;
         _agent.enabled = false;
         _rb.isKinematic = false;
-        _rb.AddForce(velocityF * 5000f, ForceMode.Impulse);
+        _rb.AddForce(velocityF * forcePower, ForceMode.Impulse);
         StartCoroutine(HitDecrease(time + 1f));
     }
 
@@ -109,7 +110,7 @@ public class AIController : MonoBehaviour
         {
             _rb.isKinematic = false;
             _gameManager.isDestination = false;
-            _agent.enabled = false;
+            //_agent.enabled = false;
         }
     }
 

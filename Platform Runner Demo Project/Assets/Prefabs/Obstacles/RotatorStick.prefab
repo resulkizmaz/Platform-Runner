@@ -9,9 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5502213062108571440}
-  - component: {fileID: 5829007992837540005}
   - component: {fileID: 4875202894677087719}
-  - component: {fileID: 4205749426013033315}
   m_Layer: 0
   m_Name: Stick
   m_TagString: Untagged
@@ -35,20 +33,6 @@ Transform:
   m_Father: {fileID: 9016096481443651056}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &5829007992837540005
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7538875800220712590}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.0053043114
-  m_Height: 0.25884208
-  m_Direction: 2
-  m_Center: {x: 0, y: -0.009741307, z: 0.00032337187}
 --- !u!114 &4875202894677087719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,22 +47,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   force: 20
   stunTime: 0.5
---- !u!208 &4205749426013033315
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7538875800220712590}
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.015, y: 0.035, z: 0.125}
-  m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 0
-  m_Center: {x: 0, y: 0, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!1 &8833004204030945401
 GameObject:
   m_ObjectHideFlags: 0

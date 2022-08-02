@@ -6,7 +6,7 @@ public class Bounce : MonoBehaviour
     public float stunTime = 0.5f;
     private Vector3 hitDirection;
 
-    void OnCollisionStay(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
         foreach (ContactPoint contact in collision.contacts)
         {
@@ -19,7 +19,12 @@ public class Bounce : MonoBehaviour
             }
 
             if (collision.transform.CompareTag("AI"))
+            {
+                hitDirection = contact.normal;
                 collision.gameObject.GetComponent<AIController>().Hit(-hitDirection * force, stunTime);
+                return;
+            }
         }
     }
+    
 }

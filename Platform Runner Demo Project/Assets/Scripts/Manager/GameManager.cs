@@ -8,16 +8,11 @@ public class GameManager : MonoBehaviour
     #region Inspector Variables
 
     [Header("Reference")]
-    [SerializeField] private GameObject _cameraObject;
-    [SerializeField] private GameObject _painterManager;
     [SerializeField] private GameObject _paintWall;
-    [SerializeField] private GameObject _paintBar;
     [SerializeField] private Transform _startPoint;
     [SerializeField] private Transform _paintPoint;
     [SerializeField] private ParticleSystem _finishParticle;
-    [Header("Settings")]
-    [SerializeField] private float _cameraTime = 2f;
-    public float paintEnergy = 100f;
+    
 
     [Space(10f)]
     [SerializeField] private List<GameObject> _levels;
@@ -29,7 +24,7 @@ public class GameManager : MonoBehaviour
     #endregion
 
     [HideInInspector] public bool isDestination = false;
-    [HideInInspector] public bool isclick = false;
+    //[HideInInspector] public bool isclick = false;
 
     #region Private Variables
 
@@ -49,7 +44,7 @@ public class GameManager : MonoBehaviour
 
         LevelProperties(_currentLevel);
 
-        _paintBar.SetActive(false);
+        //_paintBar.SetActive(false);
     }
 
     //********UPDATE********
@@ -67,7 +62,7 @@ public class GameManager : MonoBehaviour
     {
         _playerController.SetMovement(false); //Player movement is stopped
         _player.transform.position = _startPoint.position; //Player position is replaced by the starting position
-        _cameraObject.GetComponent<CameraFollow>().enabled = true; //The camera follows the player
+        //_cameraObject.GetComponent<CameraFollow>().enabled = true; //The camera follows the player
         _playerController.isPlayerActive = true; //The player is made movable
         SetUI(UIManager.UIState.Begin); //Startup ui is set
     }
@@ -92,7 +87,7 @@ public class GameManager : MonoBehaviour
         _playerController.isPlayerActive = false;
         _playerController.SetMovement(false);
         _playerController.AnimManager.SetAnimationState(AnimManager.AnimationStates.Win);
-        StartCoroutine(CameraTimer(_paintPoint.position, _cameraTime));
+        //StartCoroutine(CameraTimer(_paintPoint.position, _cameraTime));
     }
 
     //The function to be called when the level is completely finished
@@ -103,7 +98,7 @@ public class GameManager : MonoBehaviour
         else
         {
             _currentLevel = 1;
-            paintEnergy = 100;
+            //paintEnergy = 100;
         }
 
         LevelProperties(_currentLevel);
@@ -117,7 +112,7 @@ public class GameManager : MonoBehaviour
             else
                 item.SetActive(false);
 
-            _paintBar.SetActive(false);
+            //_paintBar.SetActive(false);
             _paintWall.SetActive(false);
             count++;
         }
@@ -135,12 +130,12 @@ public class GameManager : MonoBehaviour
         switch (levelIndex)
         {
             case 1:
-                uIManager.paintingBar.transform.parent.gameObject.SetActive(true);
+                //uIManager.paintingBar.transform.parent.gameObject.SetActive(true);
                 uIManager.sortingPanel.SetActive(false);
                 break;
 
             case 2:
-                uIManager.paintingBar.transform.parent.gameObject.SetActive(false);
+                //uIManager.paintingBar.transform.parent.gameObject.SetActive(false);
                 uIManager.sortingPanel.SetActive(true);
                 isDestination = false;
 
@@ -159,13 +154,14 @@ public class GameManager : MonoBehaviour
     public void PaintableAnim()
     {
         _paintWall.SetActive(true);
-        _paintBar.SetActive(true);
+        //_paintBar.SetActive(true);
     }
 
 
 
     #endregion
 
+    /*
     #region Camera Management
 
     private void CameraTween(Vector3 endValue, float time)
@@ -183,6 +179,7 @@ public class GameManager : MonoBehaviour
     }
 
     #endregion
+    */
 
     public void SetUI(UIManager.UIState state)
     {
