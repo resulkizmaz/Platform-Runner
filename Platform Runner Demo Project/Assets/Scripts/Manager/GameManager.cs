@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
 
     [Header("Reference")]
     [SerializeField] private GameObject _paintWall;
+    [SerializeField] private GameObject _obstaclesLevel1_1;
+    [SerializeField] private GameObject _obstaclesLevel1_2;
+    [SerializeField] private GameObject _camera;
     [SerializeField] private Transform _startPoint;
     [SerializeField] private Transform _paintPoint;
     [SerializeField] private ParticleSystem _finishParticle;
@@ -32,6 +35,7 @@ public class GameManager : MonoBehaviour
     private PlayerController _playerController;
 
     private int _currentLevel = 1;
+    private bool _paintCam;
 
     #endregion
 
@@ -55,6 +59,16 @@ public class GameManager : MonoBehaviour
         uIManager.sortingText.text = characterNumber.ToString();
     }
 
+    //*****FixedUpdate********
+    private void FixedUpdate()
+    {
+        if (_paintCam)
+        {
+            _camera.transform.position = Vector3.Lerp(_camera.transform.position, _paintPoint.position, Time.fixedDeltaTime);
+            //_camera.GetComponent<Camera>().
+        }
+    }
+
     #region Character Management
 
     //Player restart function
@@ -62,7 +76,7 @@ public class GameManager : MonoBehaviour
     {
         _playerController.SetMovement(false); //Player movement is stopped
         _player.transform.position = _startPoint.position; //Player position is replaced by the starting position
-        //_cameraObject.GetComponent<CameraFollow>().enabled = true; //The camera follows the player
+        _camera.GetComponent<CameraFollow>().enabled = true; //The camera follows the player
         _playerController.isPlayerActive = true; //The player is made movable
         SetUI(UIManager.UIState.Begin); //Startup ui is set
     }
@@ -154,32 +168,17 @@ public class GameManager : MonoBehaviour
     public void PaintableAnim()
     {
         _paintWall.SetActive(true);
+        _obstaclesLevel1_1.SetActive(false);
+        _obstaclesLevel1_2.SetActive(false);
+        _paintCam = true;
+        _camera.GetComponent<CameraFollow>().enabled = false;
+       
+        
         //_paintBar.SetActive(true);
-    }
-
-
-
-    #endregion
-
-    /*
-    #region Camera Management
-
-    private void CameraTween(Vector3 endValue, float time)
-    {
-        _cameraObject.transform.DOMove(endValue, time).SetEase(Ease.Linear);
-        _cameraObject.GetComponent<CameraFollow>().enabled = false;
-    }
-
-    IEnumerator CameraTimer(Vector3 endValue, float time)
-    {
-        yield return new WaitForSeconds(time);
-        CameraTween(endValue, time);
-        yield return new WaitForSeconds(time);
-        _painterManager.SetActive(true);
+        PlayerStop();
     }
 
     #endregion
-    */
 
     public void SetUI(UIManager.UIState state)
     {

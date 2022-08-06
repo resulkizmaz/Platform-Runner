@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -12,6 +13,7 @@ public class AIController : MonoBehaviour
     [Header("Ground Check")]
     [Range(0.1f, 1f)]
     [SerializeField] private float groundCheckAmount = 0.5f;
+    [SerializeField] private float groundRayAmount = 1;
     [SerializeField] private LayerMask checkLayerMask;
 
     #endregion
@@ -22,7 +24,8 @@ public class AIController : MonoBehaviour
     private NavMeshAgent _agent;
     private Rigidbody _rb;
     private AnimManager _animManager;
-
+    [SerializeField]
+    private Rotator rotaterObject;
     private GameManager _gameManager;
 
     private Vector3 _startPosition;
@@ -30,6 +33,7 @@ public class AIController : MonoBehaviour
     private bool _isHit;
     private bool _isGrounded;
     private bool _start = true;
+    private bool _isPush;
 
     #endregion
 
@@ -61,10 +65,62 @@ public class AIController : MonoBehaviour
                 _start = false;
             }
         }
-
-        //Is the AI in contact with the ground
-        _isGrounded = Physics.CheckSphere(transform.position, groundCheckAmount, checkLayerMask);
     }
+
+    private void GroundCheck()
+    {
+        _isGrounded = Physics.CheckSphere(transform.position, groundCheckAmount, checkLayerMask);
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, groundRayAmount))
+        {
+            if (hit.transform.CompareTag("RotatingPlatform"))
+            {
+                rotaterObject = hit.transform.parent.GetComponent<Rotator>();
+                Debug.Log(rotaterObject);
+                _isPush = true;
+            }
+            else
+                _isPush = false;
+        }
+
+        if (_isPush) //Is the character being pushed
+        {
+            //SetPush function is called
+            SetPush(rotaterObject.p_Direction, rotaterObject.p_DirectionMultiplier, rotaterObject.p_Speed);
+        }
+
+    }
+
+    private void FixedUpdate()
+    {
+        //Is the AI in contact with the ground
+        GroundCheck();
+    }
+
+
+    private void SetPush(Rotator.Direction axis, int direction, float speed)
+    {
+        Vector3 directionAxis = new Vector3();
+        switch (axis)
+        {
+            case Rotator.Direction.X_Axis:
+                directionAxis = Vector3.up;
+                break;
+
+            case Rotator.Direction.Y_Axis:
+                directionAxis = Vector3.forward;
+                break;
+
+            case Rotator.Direction.Z_Axis:
+                directionAxis = Vector3.right;
+                break;
+        }
+
+        _rb.AddForce(directionAxis * speed * 10f * -direction * Time.fixedDeltaTime, ForceMode.Force);
+        Debug.Log("SETPUSH !!!!!!!!!!!!");
+    }
+
 
     //AI restart
     public void RestartAI()
@@ -72,6 +128,7 @@ public class AIController : MonoBehaviour
         _animManager.SetAnimationState(AnimManager.AnimationStates.Idle);
         _agent.enabled = false; //Navmesh agent component is turned off
         _gameManager.isDestination = false;
+        _rb.AddForce(Vector3.zero);
         transform.position = _startPosition;
         StartCoroutine(MoveTimer());
     }
@@ -92,9 +149,9 @@ public class AIController : MonoBehaviour
         _rb.constraints = RigidbodyConstraints.FreezeRotation;
         _gameManager.isDestination = false;
         _agent.enabled = false;
-        _rb.isKinematic = false;
+        //_rb.isKinematic = false;
         _rb.AddForce(velocityF * forcePower, ForceMode.Impulse);
-        StartCoroutine(HitDecrease(time + 1f));
+        StartCoroutine(HitDecrease(time));
     }
 
     IEnumerator HitDecrease(float time)
@@ -102,15 +159,15 @@ public class AIController : MonoBehaviour
         yield return new WaitForSeconds(time);
         if (_isGrounded)
         {
-            _rb.isKinematic = true;
+            //_rb.isKinematic = true;
             _gameManager.isDestination = true;
             _agent.enabled = true;
         }
         else
         {
-            _rb.isKinematic = false;
+            //_rb.isKinematic = false;
             _gameManager.isDestination = false;
-            //_agent.enabled = false;
+            _agent.enabled = false;
         }
     }
 

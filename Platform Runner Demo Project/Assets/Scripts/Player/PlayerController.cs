@@ -193,6 +193,7 @@ public class PlayerController : MonoBehaviour
         }
 
         _playerRigidbody.AddForce(directionAxis * speed * 250f * -direction * Time.fixedDeltaTime, ForceMode.Force);
+        Debug.Log("SETPUSH !!!!!!!!!!!!");
     }
 
     //Function that will run when the player is hit by an obstacle
