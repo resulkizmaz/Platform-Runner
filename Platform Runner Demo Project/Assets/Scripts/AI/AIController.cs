@@ -39,25 +39,30 @@ public class AIController : MonoBehaviour
 
     public bool IsHit => _isHit;
 
-
-
-    private void Start()
+    private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
         _gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         _animManager = GetComponent<AnimManager>();
         _rb = GetComponent<Rigidbody>();
         _animManager.SetAnimationState(AnimManager.AnimationStates.Idle);
+        
+    }
 
+    private void Start()
+    {
         _startPosition = transform.position;
     }
 
 
     private void Update()
     {
+        //Is the AI in contact with the ground
+        GroundCheck();
+
         if (_gameManager.isDestination)
         {
-            if (_agent.enabled == true)
+            if (_agent.enabled == true && _isGrounded)
                 _agent.SetDestination(target.position);
             if (_start)
             {
@@ -77,7 +82,6 @@ public class AIController : MonoBehaviour
             if (hit.transform.CompareTag("RotatingPlatform"))
             {
                 rotaterObject = hit.transform.parent.GetComponent<Rotator>();
-                Debug.Log(rotaterObject);
                 _isPush = true;
             }
             else
@@ -91,13 +95,6 @@ public class AIController : MonoBehaviour
         }
 
     }
-
-    private void FixedUpdate()
-    {
-        //Is the AI in contact with the ground
-        GroundCheck();
-    }
-
 
     private void SetPush(Rotator.Direction axis, int direction, float speed)
     {
@@ -117,29 +114,32 @@ public class AIController : MonoBehaviour
                 break;
         }
 
-        _rb.AddForce(directionAxis * speed * 10f * -direction * Time.fixedDeltaTime, ForceMode.Force);
-        Debug.Log("SETPUSH !!!!!!!!!!!!");
+        _rb.AddForce(directionAxis * speed * 15f * -direction * Time.fixedDeltaTime, ForceMode.Force);
     }
 
 
     //AI restart
     public void RestartAI()
     {
-        _animManager.SetAnimationState(AnimManager.AnimationStates.Idle);
-        _agent.enabled = false; //Navmesh agent component is turned off
-        _gameManager.isDestination = false;
-        _rb.AddForce(Vector3.zero);
-        transform.position = _startPosition;
         StartCoroutine(MoveTimer());
     }
 
     IEnumerator MoveTimer()
     {
+        _animManager.SetAnimationState(AnimManager.AnimationStates.Idle);
+        _agent.enabled = false; //Navmesh agent component is turned off
+        _gameManager.isDestination = false;
+        _rb.AddForce(Vector3.zero);
+        transform.position = _startPosition;
+
         yield return new WaitForSeconds(restartTime);
+
         _agent.enabled = true;
         _gameManager.isDestination = true;
 
         _animManager.SetAnimationState(AnimManager.AnimationStates.Run);
+
+        StopCoroutine(MoveTimer());
     }
 
     public void Hit(Vector3 velocityF, float time)
@@ -149,7 +149,7 @@ public class AIController : MonoBehaviour
         _rb.constraints = RigidbodyConstraints.FreezeRotation;
         _gameManager.isDestination = false;
         _agent.enabled = false;
-        //_rb.isKinematic = false;
+        _rb.isKinematic = false;
         _rb.AddForce(velocityF * forcePower, ForceMode.Impulse);
         StartCoroutine(HitDecrease(time));
     }
@@ -159,16 +159,21 @@ public class AIController : MonoBehaviour
         yield return new WaitForSeconds(time);
         if (_isGrounded)
         {
-            //_rb.isKinematic = true;
+            _rb.isKinematic = true;
             _gameManager.isDestination = true;
             _agent.enabled = true;
         }
         else
         {
-            //_rb.isKinematic = false;
+            _rb.isKinematic = false;
             _gameManager.isDestination = false;
             _agent.enabled = false;
         }
+        yield return new WaitForSeconds(time);
+
+        _rb.isKinematic = false;
+
+        StopCoroutine(HitDecrease(time));
     }
 
     private void OnTriggerEnter(Collider other)

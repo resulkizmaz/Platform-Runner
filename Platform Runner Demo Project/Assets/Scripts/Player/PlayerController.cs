@@ -193,7 +193,7 @@ public class PlayerController : MonoBehaviour
         }
 
         _playerRigidbody.AddForce(directionAxis * speed * 250f * -direction * Time.fixedDeltaTime, ForceMode.Force);
-        Debug.Log("SETPUSH !!!!!!!!!!!!");
+
     }
 
     //Function that will run when the player is hit by an obstacle
@@ -215,9 +215,9 @@ public class PlayerController : MonoBehaviour
     {
         if (_isStuned)
             _wasStuned = true;
+
         _isStuned = true;
         _canMove = false;
-        //SetMovement(false);
 
         float delta = 0;
         delta = value / duration;

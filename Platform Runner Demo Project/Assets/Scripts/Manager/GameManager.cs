@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _obstaclesLevel1_1;
     [SerializeField] private GameObject _obstaclesLevel1_2;
     [SerializeField] private GameObject _camera;
+    [SerializeField] private GameObject _paintBrush;
     [SerializeField] private Transform _startPoint;
     [SerializeField] private Transform _paintPoint;
     [SerializeField] private ParticleSystem _finishParticle;
@@ -60,13 +61,10 @@ public class GameManager : MonoBehaviour
     }
 
     //*****FixedUpdate********
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         if (_paintCam)
-        {
-            _camera.transform.position = Vector3.Lerp(_camera.transform.position, _paintPoint.position, Time.fixedDeltaTime);
-            //_camera.GetComponent<Camera>().
-        }
+            _camera.transform.position = Vector3.Lerp(_camera.transform.position, _paintPoint.position, Time.fixedDeltaTime * 5f);
     }
 
     #region Character Management
@@ -165,21 +163,34 @@ public class GameManager : MonoBehaviour
         SetUI(UIManager.UIState.Win);
     }
 
+
+    #endregion
+
+    #region Paint Wall
+
     public void PaintableAnim()
     {
         _paintWall.SetActive(true);
         _obstaclesLevel1_1.SetActive(false);
         _obstaclesLevel1_2.SetActive(false);
-        _paintCam = true;
         _camera.GetComponent<CameraFollow>().enabled = false;
-       
-        
-        //_paintBar.SetActive(true);
         PlayerStop();
+        //_paintBar.SetActive(true);
+        StartCoroutine(PaintCamera());
+        
+    }
+    IEnumerator PaintCamera()
+    {
+        yield return new WaitForSeconds(1f);
+        _paintCam = true;
+        yield return new WaitForSeconds(2.5f);
+        _paintBrush.SetActive(true);
+
+        StopCoroutine(PaintCamera());
     }
 
     #endregion
-
+    
     public void SetUI(UIManager.UIState state)
     {
         uIManager.SetUIPanels(state);
