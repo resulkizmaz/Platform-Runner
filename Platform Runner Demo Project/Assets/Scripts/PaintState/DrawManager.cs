@@ -4,52 +4,49 @@ public class DrawManager : MonoBehaviour
 {
 
     public GameObject drawBrush;
-    public LayerMask layerMask;
-
+    [SerializeField] LayerMask layerMask;
+    
     GameObject _theTrail;
-    Plane _planeObj;
+    Camera _camera;
     Vector3 _startPos;
-    void Awake()
+
+    private void Start()
     {
-        _planeObj = new Plane(Camera.main.transform.forward * -1, this.transform.position);
+        _camera = Camera.main;
+    }
+    
+
+    void Update()
+    {
+        Painting();
     }
 
 
-/*
- * mouse position X :  -8 --- +8 
- * mouse position Y : +28 --- 0 
- * z = 119
- */
-    void Update()
+    /* 
+     * mouse position X : -8 --- +8 
+     * mouse position Y :  0 --- +27.5 
+     * z = 119
+     */
+    private void Painting()
     {
+        Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began || Input.GetMouseButtonDown(0)) 
+        if (Physics.Raycast(ray, out hit, 150f, layerMask) && (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began || Input.GetMouseButtonDown(0))) 
         {
-            _theTrail = (GameObject)Instantiate(drawBrush, this.transform.position, Quaternion.identity);
-
-            Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            float _dis;
-            if (_planeObj.Raycast(mouseRay,out _dis)) 
+            if (hit.collider.name == "PaintablePlane") 
             {
-                _startPos = mouseRay.GetPoint(_dis);
-                float x = Mathf.Clamp(_startPos.x, -8f, 8f);
-                float y = Mathf.Clamp(_startPos.y, 0, 28f);
-                _startPos = new Vector3(x, y, 119);
+                _theTrail = (GameObject)Instantiate(drawBrush, hit.point, Quaternion.identity);
+                _startPos = ray.GetPoint(hit.distance);
             }
         }
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved || Input.GetMouseButton(0)) 
+
+
+        if (Physics.Raycast(ray, out hit, 150f, layerMask) && (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved || Input.GetMouseButton(0))) 
         {
-            Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            float _dis;
-            if (_planeObj.Raycast(mouseRay, out _dis)) 
-            {
-                _theTrail.transform.position = mouseRay.GetPoint(_dis);
-                float x =Mathf.Clamp(_theTrail.transform.position.x, -8f, 8f);
-                float y =Mathf.Clamp(_theTrail.transform.position.y, 0, 28f);
-                _theTrail.transform.position = new Vector3(x, y, 119);
+            if (hit.collider.name == "PaintablePlane")
+                _theTrail.transform.position = ray.GetPoint(hit.distance - 0.001f);
                 
-                Debug.Log(mouseRay.GetPoint(_dis));
-            }
         }
     }
 }

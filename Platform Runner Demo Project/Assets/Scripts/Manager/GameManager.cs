@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,10 +8,10 @@ public class GameManager : MonoBehaviour
 
     [Header("Reference")]
     [SerializeField] private GameObject _paintWall;
-    [SerializeField] private GameObject _obstaclesLevel1_1;
-    [SerializeField] private GameObject _obstaclesLevel1_2;
     [SerializeField] private GameObject _camera;
     [SerializeField] private GameObject _paintBrush;
+    [SerializeField] private GameObject _paintDone;
+    [SerializeField] private GameObject _paintText;
     [SerializeField] private Transform _startPoint;
     [SerializeField] private Transform _paintPoint;
     [SerializeField] private ParticleSystem _finishParticle;
@@ -28,7 +27,6 @@ public class GameManager : MonoBehaviour
     #endregion
 
     [HideInInspector] public bool isDestination = false;
-    //[HideInInspector] public bool isclick = false;
 
     #region Private Variables
 
@@ -42,22 +40,25 @@ public class GameManager : MonoBehaviour
 
     public Transform StartPoint => _startPoint;
 
-    private void Start()
+    private void Awake()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
         _playerController = _player.GetComponent<PlayerController>();
+    }
 
-        LevelProperties(_currentLevel);
+    private void Start()
+    {
+        SetUI(UIManager.UIState.Begin);
 
-        //_paintBar.SetActive(false);
+        LevelProperties(_currentLevel); // Handles to Level index (which level we are playing?)
     }
 
     //********UPDATE********
     private void Update()
     {
         _characters.Sort(CharacterSorting);
-        int characterNumber = _characters.Count - _characters.IndexOf(_player.transform);
-        uIManager.sortingText.text = characterNumber.ToString();
+        int characterNumber = _characters.Count - _characters.IndexOf(_player.transform); // to check the sorting between each item in the list and the player.
+        uIManager.sortingText.text = characterNumber.ToString(); // Shows player's rank
     }
 
     //*****FixedUpdate********
@@ -75,8 +76,10 @@ public class GameManager : MonoBehaviour
         _playerController.SetMovement(false); //Player movement is stopped
         _player.transform.position = _startPoint.position; //Player position is replaced by the starting position
         _camera.GetComponent<CameraFollow>().enabled = true; //The camera follows the player
-        _playerController.isPlayerActive = true; //The player is made movable
-        SetUI(UIManager.UIState.Begin); //Startup ui is set
+        _playerController.isPlayerActive = true; //The player is made active
+        _playerController.AnimManager.SetAnimationState(AnimManager.AnimationStates.Idle); // Set the animation.
+        //SetUI(UIManager.UIState.Begin);
+        
     }
 
     public void PlayerStop()
@@ -99,24 +102,20 @@ public class GameManager : MonoBehaviour
         _playerController.isPlayerActive = false;
         _playerController.SetMovement(false);
         _playerController.AnimManager.SetAnimationState(AnimManager.AnimationStates.Win);
-        //StartCoroutine(CameraTimer(_paintPoint.position, _cameraTime));
     }
 
-    //The function to be called when the level is completely finished
-    public void FinishLevel()
+    public void FinishLevel()   //The function to be called when the level is completely finished
     {
         if (_currentLevel < 2)
             _currentLevel++;
         else
-        {
             _currentLevel = 1;
-            //paintEnergy = 100;
-        }
 
         LevelProperties(_currentLevel);
 
-        int count = 0;
+
         //level pass is provided
+        int count = 0;
         foreach (GameObject item in _levels)
         {
             if (count == _currentLevel - 1)
@@ -124,7 +123,6 @@ public class GameManager : MonoBehaviour
             else
                 item.SetActive(false);
 
-            //_paintBar.SetActive(false);
             _paintWall.SetActive(false);
             count++;
         }
@@ -142,12 +140,10 @@ public class GameManager : MonoBehaviour
         switch (levelIndex)
         {
             case 1:
-                //uIManager.paintingBar.transform.parent.gameObject.SetActive(true);
                 uIManager.sortingPanel.SetActive(false);
                 break;
 
             case 2:
-                //uIManager.paintingBar.transform.parent.gameObject.SetActive(false);
                 uIManager.sortingPanel.SetActive(true);
                 isDestination = false;
 
@@ -168,35 +164,50 @@ public class GameManager : MonoBehaviour
 
     #region Paint Wall
 
-    public void PaintableAnim()
+    public void PaintState()
     {
         _paintWall.SetActive(true);
-        _obstaclesLevel1_1.SetActive(false);
-        _obstaclesLevel1_2.SetActive(false);
         _camera.GetComponent<CameraFollow>().enabled = false;
         PlayerStop();
-        //_paintBar.SetActive(true);
+        _paintText.SetActive(true);
         StartCoroutine(PaintCamera());
-        
     }
     IEnumerator PaintCamera()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         _paintCam = true;
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(1f);
+        _paintText.SetActive(false);
         _paintBrush.SetActive(true);
+        _paintDone.SetActive(true);
 
         StopCoroutine(PaintCamera());
+    }
+    public void PaintDone()
+    {
+        _paintDone.SetActive(false);
+        _paintBrush.SetActive(false);
+        _paintWall.SetActive(false);
+        _paintCam = false;
+        _camera.GetComponent<CameraFollow>().enabled = true;
+
+        var clones = GameObject.FindGameObjectsWithTag("Clone"); // Destroyed created trails when level ends.
+        foreach (var _clone in clones)
+        {
+            Destroy(_clone);
+        }
+
+        FinishUI();
     }
 
     #endregion
     
-    public void SetUI(UIManager.UIState state)
+    public void SetUI(UIManager.UIState state) // Manages UI states.
     {
         uIManager.SetUIPanels(state);
     }
 
-    private int CharacterSorting(Transform p1, Transform p2)
+    private int CharacterSorting(Transform p1, Transform p2) // checking the z-axis oriented sorting. 
     {
         return p1.position.z.CompareTo(p2.position.z);
     }

@@ -9,7 +9,8 @@ public class AIController : MonoBehaviour
 
     [SerializeField] private Transform target;
     [SerializeField] private float restartTime = 1f;
-    [SerializeField] private float forcePower;
+    [SerializeField] private float forcePower; // For obstacles pushing.
+    [SerializeField]private float _sliderPower; // For rotator platforms slideing mechanic.
     [Header("Ground Check")]
     [Range(0.1f, 1f)]
     [SerializeField] private float groundCheckAmount = 0.5f;
@@ -30,6 +31,7 @@ public class AIController : MonoBehaviour
 
     private Vector3 _startPosition;
 
+
     private bool _isHit;
     private bool _isGrounded;
     private bool _start = true;
@@ -39,27 +41,20 @@ public class AIController : MonoBehaviour
 
     public bool IsHit => _isHit;
 
-    private void Awake()
+
+    private void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
         _gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         _animManager = GetComponent<AnimManager>();
         _rb = GetComponent<Rigidbody>();
         _animManager.SetAnimationState(AnimManager.AnimationStates.Idle);
-        
-    }
-
-    private void Start()
-    {
         _startPosition = transform.position;
     }
 
 
     private void Update()
     {
-        //Is the AI in contact with the ground
-        GroundCheck();
-
         if (_gameManager.isDestination)
         {
             if (_agent.enabled == true && _isGrounded)
@@ -70,6 +65,11 @@ public class AIController : MonoBehaviour
                 _start = false;
             }
         }
+    }
+    private void FixedUpdate()
+    {
+        //Is the AI in contact with the ground
+        GroundCheck();
     }
 
     private void GroundCheck()
@@ -114,17 +114,12 @@ public class AIController : MonoBehaviour
                 break;
         }
 
-        _rb.AddForce(directionAxis * speed * 15f * -direction * Time.fixedDeltaTime, ForceMode.Force);
+        _rb.AddForce(directionAxis * speed * _sliderPower * -direction * Time.fixedDeltaTime, ForceMode.Force);
     }
 
 
     //AI restart
     public void RestartAI()
-    {
-        StartCoroutine(MoveTimer());
-    }
-
-    IEnumerator MoveTimer()
     {
         _animManager.SetAnimationState(AnimManager.AnimationStates.Idle);
         _agent.enabled = false; //Navmesh agent component is turned off
@@ -132,11 +127,15 @@ public class AIController : MonoBehaviour
         _rb.AddForce(Vector3.zero);
         transform.position = _startPosition;
 
+        StartCoroutine(MoveTimer());
+    }
+
+    IEnumerator MoveTimer()
+    {
         yield return new WaitForSeconds(restartTime);
 
         _agent.enabled = true;
         _gameManager.isDestination = true;
-
         _animManager.SetAnimationState(AnimManager.AnimationStates.Run);
 
         StopCoroutine(MoveTimer());
@@ -151,12 +150,14 @@ public class AIController : MonoBehaviour
         _agent.enabled = false;
         _rb.isKinematic = false;
         _rb.AddForce(velocityF * forcePower, ForceMode.Impulse);
+
         StartCoroutine(HitDecrease(time));
     }
 
     IEnumerator HitDecrease(float time)
     {
         yield return new WaitForSeconds(time);
+
         if (_isGrounded)
         {
             _rb.isKinematic = true;
@@ -172,6 +173,7 @@ public class AIController : MonoBehaviour
         yield return new WaitForSeconds(time);
 
         _rb.isKinematic = false;
+
 
         StopCoroutine(HitDecrease(time));
     }

@@ -34,13 +34,13 @@ public class PlayerController : MonoBehaviour
     private float _gravity;
     private int _forwardSpeed = 1;
     private bool _isPush;
-    private bool _canMove = false;
     private float _pushForce;
     private Vector3 _pushDirection;
 
     private bool _isStuned = false;
     private bool _wasStuned = false;
 
+    public bool _canMove = false;
 
     #endregion
 
@@ -63,6 +63,9 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //The character's contact with the ground is checked.
+        CheckGround();
+
         if (_isPush) //Is the character being pushed
         {
             //SetPush function is called
@@ -84,10 +87,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        //The character's contact with the ground is checked.
-        CheckGround();
-
-        //If the character is playable and the left mouse button is pressed
+        //If the character is playable and the left mouse button is pressed for the first time
         if (Input.GetMouseButtonDown(0) && !_canMove && isPlayerActive)
         {
             _gameManager.isDestination = true; //Artificial intelligence movement begins

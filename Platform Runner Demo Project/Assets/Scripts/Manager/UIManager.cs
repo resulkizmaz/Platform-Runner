@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    public enum UIState { Gameplay, Win, Lose, Settings, Begin, Pause };
+    public enum UIState { Gameplay, Win, Restart, Settings, Begin, Pause };
 
     //[Header("Other Reference")]
     //[SerializeField] private MousePainter mousePainter;
@@ -13,9 +14,10 @@ public class UIManager : MonoBehaviour
     public GameObject sortingPanel;
     public Text sortingText;
     [Header("Panels")]
-    [SerializeField] private GameObject gameplayPanel;
-    [SerializeField] private GameObject winPanel;
-    [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject _gameplayPanel;
+    [SerializeField] private GameObject _winPanel;
+    [SerializeField] private GameObject _pausePanel;
+    [SerializeField] private GameObject _settingsPanel;
     public GameObject beginPanel;
 
     private GameManager _gameManager;
@@ -24,15 +26,6 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         _gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
-
-       // if (mousePainter != null)
-          //  paintingBar.fillAmount = mousePainter.PaintEnergy / 100f;
-    }
-
-    private void Update()
-    {
-        //if (mousePainter.IsClick && mousePainter != null) // While we painting the wall the energy decreases. (Visually)
-            //paintingBar.fillAmount = _gameManager.paintEnergy / 100f;
     }
 
     public void SetUIPanels(UIState state)
@@ -40,37 +33,48 @@ public class UIManager : MonoBehaviour
         switch (state)
         {
             case UIState.Gameplay:
-                gameplayPanel.SetActive(true);
-                winPanel.SetActive(false);
+                _gameplayPanel.SetActive(true);
+                _winPanel.SetActive(false);
                 beginPanel.SetActive(false);
-                pausePanel.SetActive(false);
+                _pausePanel.SetActive(false);
+                _settingsPanel.SetActive(false);
                 break;
 
             case UIState.Win:
-                winPanel.SetActive(true);
-                gameplayPanel.SetActive(false);
+                _winPanel.SetActive(true);
+                _gameplayPanel.SetActive(false);
                 beginPanel.SetActive(false);
-                pausePanel.SetActive(false);
+                _settingsPanel.SetActive(false);
+                _pausePanel.SetActive(false);
                 break;
 
             case UIState.Begin:
-                winPanel.SetActive(false);
-                gameplayPanel.SetActive(false);
+                _winPanel.SetActive(false);
+                _gameplayPanel.SetActive(false);
                 beginPanel.SetActive(true);
-                pausePanel.SetActive(false);
+                _pausePanel.SetActive(false);
+                _settingsPanel.SetActive(false);
                 break;
 
             case UIState.Pause:
-                winPanel.SetActive(false);
-                gameplayPanel.SetActive(false);
+                _winPanel.SetActive(false);
+                _gameplayPanel.SetActive(false);
                 beginPanel.SetActive(false);
-                pausePanel.SetActive(true);
+                _settingsPanel.SetActive(false);
+                _pausePanel.SetActive(true);
                 break;
 
-            case UIState.Lose:
-                break;
 
             case UIState.Settings:
+                _winPanel.SetActive(false);
+                _gameplayPanel.SetActive(false);
+                beginPanel.SetActive(false);
+                _pausePanel.SetActive(true);
+                _settingsPanel.SetActive(true);
+                break;
+
+            case UIState.Restart:
+                SceneManager.LoadScene(0);
                 break;
         }
     }
@@ -86,10 +90,40 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1f;
         SetUIPanels(UIState.Gameplay);
     }
+    public void SettingsPanel() // Quality Settings ( Project Settings - Quality )
+    {
+        SetUIPanels(UIState.Settings);
+    }
+    public void CloseSettingsPanel()
+    {
+        SetUIPanels(UIState.Pause);
+    }
+    public void Low()
+    {
+
+        QualitySettings.SetQualityLevel(1);
+
+        CloseSettingsPanel();
+    }
+    public void Medium()
+    {
+
+        QualitySettings.SetQualityLevel(2);
+
+        CloseSettingsPanel();
+    }
+    public void High()
+    {
+
+        QualitySettings.SetQualityLevel(3);
+
+        CloseSettingsPanel();
+    }
 
     public void Restart()
     {
-        _gameManager.RestartCharacter();
+        SetUIPanels(UIState.Restart);
+        Time.timeScale = 1f;
     }
 
     public void Quit()

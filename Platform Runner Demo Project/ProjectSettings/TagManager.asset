@@ -13,6 +13,8 @@ TagManager:
   - Donut
   - AI
   - RotatingPlatform
+  - Clone
+  - PaintPlane
   layers:
   - Default
   - TransparentFX
